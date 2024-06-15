@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Mensajería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .seccion-registro {
+            display: block;
+        }
+        .seccion-pedidos {
+            display: none;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sección de Registro de Cliente -->
+    <div class="seccion-registro">
+        <h1>Registro de Cliente</h1>
+
+        <!-- Formulario para registrar un nuevo cliente -->
+        <form id="formRegistrarCliente">
+            <h2>Registrar Nuevo Cliente</h2>
+            <label for="nit">NIT:</label>
+            <input type="text" id="nit" name="nit" required><br><br>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required><br><br>
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" required><br><br>
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" name="ciudad" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" name="telefono" required><br><br>
+            <button type="submit">Registrar Cliente</button>
+        </form>
+
+        <!-- Botón para ir a la interfaz de pedidos -->
+        <button id="btnIrAPedidos" style="display: none;">Ir a Pedidos</button>
+
+        <!-- Resultado de las operaciones de registro -->
+        <div id="resultadoRegistro"></div>
+    </div>
+
+    <!-- Sección de Pedidos -->
+    <div class="seccion-pedidos">
+        <h1>Interfaz de Pedidos</h1>
+
+        <!-- Formulario para registrar un nuevo pedido -->
+        <form id="formRegistrarPedido">
+            <h2>Registrar Nuevo Pedido</h2>
+            <label for="origen">Origen:</label>
+            <input type="text" id="origen" name="origen" required><br><br>
+            <label for="destino">Destino:</label>
+            <input type="text" id="destino" name="destino" required><br><br>
+            <label for="ciudadPedido">Ciudad:</label>
+            <input type="text" id="ciudadPedido" name="ciudadPedido" required><br><br>
+            <label for="descripcion">Descripción:</label><br>
+            <textarea id="descripcion" name="descripcion" rows="4" required></textarea><br><br>
+            <label for="tipoTransporte">Tipo de Transporte:</label>
+            <select id="tipoTransporte" name="tipoTransporte" required>
+                <option value="terrestre">Terrestre</option>
+                <option value="aereo">Aéreo</option>
+                <option value="maritimo">Marítimo</option>
+            </select><br><br>
+            <label for="numPaquetes">Número de Paquetes:</label>
+            <input type="number" id="numPaquetes" name="numPaquetes" min="1" required><br><br>
+            <button type="submit">Registrar Pedido</button>
+        </form>
+
+        <!-- Resultado de las operaciones de pedidos -->
+        <div id="resultadoPedidos"></div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // Función para manejar la acción de registrar un cliente
+        document.getElementById('formRegistrarCliente').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const nit = document.getElementById('nit').value;
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const ciudad = document.getElementById('ciudad').value;
+            const email = document.getElementById('email').value;
+            const telefono = document.getElementById('telefono').value;
+
+            const response = await fetch('/registrar-cliente', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nit, nombre, direccion, ciudad, email, telefono })
+            });
+
+            const data = await response.text();
+            document.getElementById('resultadoRegistro').textContent = data;
+
+            // Mostrar el botón para ir a la interfaz de pedidos
+            document.getElementById('btnIrAPedidos').style.display = 'block';
+
+            // Ocultar la sección de registro y mostrar la sección de pedidos
+            document.querySelector('.seccion-registro').style.display = 'none';
+            document.querySelector('.seccion-pedidos').style.display = 'block';
+        });
+
+        // Función para manejar la acción de registrar un pedido
+        document.getElementById('formRegistrarPedido').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const origen = document.getElementById('origen').value;
+            const destino = document.getElementById('destino').value;
+            const ciudadPedido = document.getElementById('ciudadPedido').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const tipoTransporte = document.getElementById('tipoTransporte').value;
+            const numPaquetes = document.getElementById('numPaquetes').value;
+
+            const response = await fetch('/registrar-pedido', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ origen, destino, ciudadPedido, descripcion, tipoTransporte, numPaquetes })
+            });
+
+            const data = await response.text();
+            document.getElementById('resultadoPedidos').textContent = data;
+        });
+    </script>
+</body>
+</html>
